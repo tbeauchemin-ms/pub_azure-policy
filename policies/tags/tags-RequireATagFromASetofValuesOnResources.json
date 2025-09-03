@@ -1,0 +1,113 @@
+{
+    "properties": {
+        "displayName": "Require a tag and value from a set of values on resources",
+        "policyType": "Custom",
+        "mode": "Indexed",
+        "description": "Enforces a tag and its value from a set of values on resources. Does not apply to resource groups.",
+        "metadata": {
+            "version": "1.0.0",
+            "category": "Tags"
+        },
+        "version": "1.0.0",
+        "parameters": {
+            "effect": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Effect",
+                    "description": "Specifies the enforcement of the policy. If set to 'Deny', the policy will block non-compliant resources. If set to 'Audit', the policy will log non-compliance without blocking resources."
+                },
+                "allowedValues": [
+                    "Deny",
+                    "Audit",
+                    "Disabled"
+                ],
+                "defaultValue": "Deny"
+            },
+            "tagRequireType": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Tag Requirement Type",
+                    "description": "Specifies whether to require the tag and a value from the set of values or to just check the value of a tag from the set."
+                },
+                "allowedValues": [
+                    "RequireTagAndValue",
+                    "RequireTagValueFromSet"
+                ]
+            },
+            "tagName": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Tag Name",
+                    "description": "Name of the tag, such as 'environment'"
+                }
+            },
+            "tagValues": {
+                "type": "Array",
+                "metadata": {
+                    "displayName": "Tag Values",
+                    "description": "An array of Values for the tag, such as 'production', 'staging', 'development'"
+                }
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "anyOf": [
+                            {
+                                "value": "[first(parameters('resourceTypes'))]",
+                                "equals": "*"
+                            },
+                            {
+                                "field": "type",
+                                "in": "[parameters('resourceTypes')]"
+                            }
+                        ]
+                    },
+                    {
+                        "anyOf": [
+                            {
+                                "allOf": [
+                                    {
+                                        "value": "[parameters('tagRequireType')]",
+                                        "equals": "RequireTagAndValue"
+                                    },
+                                    {
+                                        "not": {
+                                            "field": "[concat('tags[', parameters('tagName'), ']')]",
+                                            "in": "[parameters('tagValues')]"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "allOf": [
+                                    {
+                                        "value": "[parameters('tagRequireType')]",
+                                        "equals": "RequireTagValueFromSet"
+                                    },
+                                    {
+                                        "field": "[concat('tags[', parameters('tagName'), ']')]",
+                                        "exists": "true"
+                                    },
+                                    {
+                                        "not": {
+                                            "field": "[concat('tags[', parameters('tagName'), ']')]",
+                                            "in": "[parameters('tagValues')]"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            "then": {
+                "effect": "[parameters('effect')]"
+            }
+        }
+    },
+    "versions": [
+        "1.0.0"
+    ]
+}
