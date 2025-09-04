@@ -3,7 +3,7 @@
         "displayName": "Require Network Security Group on Subnet",
         "policyType": "Custom",
         "mode": "All",
-        "description": "This policy ensures that all subnets have a Network Security Group assigned at the time of deployment. Deployment will be blocked if no NSG is specified.",
+        "description": "This policy ensures that all subnets have a Network Security Group assigned at the time of deployment. This policy works for both standalone subnet deployments and subnets created as part of virtual network deployments. Deployment will be blocked if no NSG is specified.",
         "metadata": {
             "category": "Network",
             "version": "1.0.0"
@@ -14,10 +14,11 @@
                 "type": "String",
                 "metadata": {
                     "displayName": "Effect",
-                    "description": "Enable or disable the execution of the policy. Use 'Deny' to block subnet creation without NSG, or 'Disabled' to turn off the policy."
+                    "description": "Specifies the enforcement of the policy. If set to 'Deny', the policy will block non-compliant resources. If set to 'Audit', the policy will log non-compliance without blocking resources."
                 },
                 "allowedValues": [
                     "Deny",
+                    "Audit",
                     "Disabled"
                 ],
                 "defaultValue": "Deny"
@@ -29,33 +30,72 @@
                     "description": "List of subnet names that are exempt from this policy (e.g., AzureFirewallSubnet, GatewaySubnet, AzureBastionSubnet)"
                 },
                 "defaultValue": [
-                    "AzureFirewallSubnet",
-                    "GatewaySubnet",
                     "AzureBastionSubnet",
+                    "AzureFirewallSubnet",
+                    "AzureFirewallManagementSubnet",
+                    "GatewaySubnet",
                     "RouteServerSubnet"
                 ]
             }
         },
         "policyRule": {
             "if": {
-                "allOf": [
+                "anyOf": [
                     {
-                        "field": "type",
-                        "equals": "Microsoft.Network/virtualNetworks/subnets"
-                    },
-                    {
-                        "field": "name",
-                        "notIn": "[parameters('excludedSubnets')]"
-                    },
-                    {
-                        "anyOf": [
+                        "allOf": [
                             {
-                                "field": "Microsoft.Network/virtualNetworks/subnets/networkSecurityGroup.id",
-                                "exists": "false"
+                                "field": "type",
+                                "equals": "Microsoft.Network/virtualNetworks/subnets"
                             },
                             {
-                                "field": "Microsoft.Network/virtualNetworks/subnets/networkSecurityGroup.id",
-                                "equals": ""
+                                "field": "name",
+                                "notIn": "[parameters('excludedSubnets')]"
+                            },
+                            {
+                                "anyOf": [
+                                    {
+                                        "field": "Microsoft.Network/virtualNetworks/subnets/networkSecurityGroup.id",
+                                        "exists": "false"
+                                    },
+                                    {
+                                        "field": "Microsoft.Network/virtualNetworks/subnets/networkSecurityGroup.id",
+                                        "equals": ""
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "allOf": [
+                            {
+                                "field": "type",
+                                "equals": "Microsoft.Network/virtualNetworks"
+                            },
+                            {
+                                "count": {
+                                    "field": "Microsoft.Network/virtualNetworks/subnets[*]",
+                                    "where": {
+                                        "allOf": [
+                                            {
+                                                "field": "Microsoft.Network/virtualNetworks/subnets[*].name",
+                                                "notIn": "[parameters('excludedSubnets')]"
+                                            },
+                                            {
+                                                "anyOf": [
+                                                    {
+                                                        "field": "Microsoft.Network/virtualNetworks/subnets[*].networkSecurityGroup.id",
+                                                        "exists": "false"
+                                                    },
+                                                    {
+                                                        "field": "Microsoft.Network/virtualNetworks/subnets[*].networkSecurityGroup.id",
+                                                        "equals": ""
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                },
+                                "greater": 0
                             }
                         ]
                     }
