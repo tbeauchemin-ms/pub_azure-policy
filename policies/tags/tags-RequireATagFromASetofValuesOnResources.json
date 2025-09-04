@@ -51,52 +51,36 @@
         },
         "policyRule": {
             "if": {
-                "allOf": [
+                "anyOf": [
                     {
-                        "anyOf": [
+                        "allOf": [
                             {
-                                "value": "[first(parameters('resourceTypes'))]",
-                                "equals": "*"
+                                "value": "[parameters('tagRequireType')]",
+                                "equals": "RequireTagAndValue"
                             },
                             {
-                                "field": "type",
-                                "in": "[parameters('resourceTypes')]"
+                                "not": {
+                                    "field": "[concat('tags[', parameters('tagName'), ']')]",
+                                    "in": "[parameters('tagValues')]"
+                                }
                             }
                         ]
                     },
                     {
-                        "anyOf": [
+                        "allOf": [
                             {
-                                "allOf": [
-                                    {
-                                        "value": "[parameters('tagRequireType')]",
-                                        "equals": "RequireTagAndValue"
-                                    },
-                                    {
-                                        "not": {
-                                            "field": "[concat('tags[', parameters('tagName'), ']')]",
-                                            "in": "[parameters('tagValues')]"
-                                        }
-                                    }
-                                ]
+                                "value": "[parameters('tagRequireType')]",
+                                "equals": "RequireTagValueFromSet"
                             },
                             {
-                                "allOf": [
-                                    {
-                                        "value": "[parameters('tagRequireType')]",
-                                        "equals": "RequireTagValueFromSet"
-                                    },
-                                    {
-                                        "field": "[concat('tags[', parameters('tagName'), ']')]",
-                                        "exists": "true"
-                                    },
-                                    {
-                                        "not": {
-                                            "field": "[concat('tags[', parameters('tagName'), ']')]",
-                                            "in": "[parameters('tagValues')]"
-                                        }
-                                    }
-                                ]
+                                "field": "[concat('tags[', parameters('tagName'), ']')]",
+                                "exists": "true"
+                            },
+                            {
+                                "not": {
+                                    "field": "[concat('tags[', parameters('tagName'), ']')]",
+                                    "in": "[parameters('tagValues')]"
+                                }
                             }
                         ]
                     }
