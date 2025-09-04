@@ -1,0 +1,74 @@
+{
+    "properties": {
+        "displayName": "Require a tag and value from a set of values on specific resource types.",
+        "policyType": "Custom",
+        "mode": "Indexed",
+        "description": "Enforces a tag and its value from a set of values on specific resource types.",
+        "metadata": {
+            "version": "1.0.0",
+            "category": "Tags"
+        },
+        "version": "1.0.0",
+        "parameters": {
+            "resourceTypes": {
+                "type": "Array",
+                "metadata": {
+                    "displayName": "Resource Types",
+                    "description": "The resource types to which the policy applies. Specify '*' for all resource types.",
+                    "strongType": "resourceType"
+                },
+                "defaultValue": [
+                    "*"
+                ]
+            },
+            "tagName": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Tag Name",
+                    "description": "Name of the tag, such as 'environment'"
+                }
+            },
+            "tagValue": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Tag Value",
+                    "description": "Value of the tag, such as 'production'"
+                }
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "anyOf": [
+                            {
+                                "value": "[first(parameters('resourceTypes'))]",
+                                "equals": "*"
+                            },
+                            {
+                                "field": "type",
+                                "in": "[parameters('resourceTypes')]"
+                            }
+                        ]
+                    },
+                    {
+                        "field": "[concat('tags[', parameters('tagName'), ']')]",
+                        "exists": "false"
+                    }
+                ]
+            },
+            "then": {
+                "effect": "append",
+                "details": [
+                    {
+                        "field": "[concat('tags[', parameters('tagName'), ']')]",
+                        "value": "[parameters('tagValue')]"
+                    }
+                ]
+            }
+        }
+    },
+    "versions": [
+        "1.0.0"
+    ]
+}

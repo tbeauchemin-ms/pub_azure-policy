@@ -1,0 +1,77 @@
+{
+    "properties": {
+        "displayName": "Inherit a tag from the resource group on specific resource types.",
+        "policyType": "Custom",
+        "mode": "Indexed",
+        "description": "Adds or replaces the specified tag and value from the parent resource group on specific resource types when any resource is created or updated. Existing resources can be remediated by triggering a remediation task.",
+        "metadata": {
+            "version": "1.0.0",
+            "category": "Tags"
+        },
+        "version": "1.0.0",
+        "parameters": {
+            "resourceTypes": {
+                "type": "Array",
+                "metadata": {
+                    "displayName": "Resource Types",
+                    "description": "The resource types to which the policy applies. Specify '*' for all resource types.",
+                    "strongType": "resourceType"
+                },
+                "defaultValue": [
+                    "*"
+                ]
+            },
+            "tagName": {
+                "type": "String",
+                "metadata": {
+                    "displayName": "Tag Name",
+                    "description": "Name of the tag, such as 'environment'"
+                }
+            }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "anyOf": [
+                            {
+                                "value": "[first(parameters('resourceTypes'))]",
+                                "equals": "*"
+                            },
+                            {
+                                "field": "type",
+                                "in": "[parameters('resourceTypes')]"
+                            }
+                        ]
+                    },
+                    {
+                        "field": "[concat('tags[', parameters('tagName'), ']')]",
+                        "notEquals": "[resourceGroup().tags[parameters('tagName')]]"
+                    },
+                    {
+                        "value": "[resourceGroup().tags[parameters('tagName')]]",
+                        "notEquals": ""
+                    }
+                ]
+            },
+            "then": {
+                "effect": "modify",
+                "details": {
+                    "roleDefinitionIds": [
+                        "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+                    ],
+                    "operations": [
+                        {
+                            "operation": "addOrReplace",
+                            "field": "[concat('tags[', parameters('tagName'), ']')]",
+                            "value": "[resourceGroup().tags[parameters('tagName')]]"
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "versions": [
+        "1.0.0"
+    ]
+}
