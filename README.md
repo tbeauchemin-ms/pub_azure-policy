@@ -15,13 +15,13 @@ All policies are designed following Azure Policy best practices with comprehensi
 ## Repository Structure
 
 ```
-├── policies/              # Individual Azure Policy definitions
+├── policies/             # Individual Azure Policy definitions
 │   ├── net/              # Network-related policies
 │   ├── mon/              # Monitoring and diagnostic policies
 │   └── tags/             # Tag governance policies
 ├── initiatives/          # Policy Initiative definitions (policy sets)
 │   └── mon/              # Monitoring policy initiatives
-└── README.md            # This file
+└── README.md             # This file
 ```
 
 ## Quick Start
@@ -35,29 +35,29 @@ All policies are designed following Azure Policy best practices with comprehensi
 
 ### Network Policies (`/policies/net/`)
 
-| Policy | File | Description | Effects |
-|--------|------|-------------|---------|
-| **Require NSG on Subnets** | `vnetSubnet-RequireNetworkSecurityGroup.json` | Ensures all subnets have a Network Security Group assigned | Deny, Audit, Disabled |
-| **Audit Required NSG Rules** | `networkSecurityGroup-AuditRequiredSecurityRule.json` | Audits NSGs to ensure they contain specific security rules | Audit, AuditIfNotExists, Disabled |
-| **Deploy Required NSG Rules** | `networkSecurityGroup-DeployRequiredSecurityRule.json` | Automatically deploys missing security rules to NSGs | DeployIfNotExists, AuditIfNotExists, Disabled |
-| **Prevent Specific NSG Rules** | `networkSecurityGroup-DenySecurityRule.json` | Prevents creation of NSG rules matching specified criteria | Deny, Audit, Disabled |
-| **Enable Private DNS Internet Fallback** | `privateDnsZones-EnableInternetFailback.json` | Configures private DNS zones to enable internet fallback | DeployIfNotExists, Disabled |
+| Policy | File | Description | Effects | State |
+|--------|------|-------------|---------|-------|
+| **Require NSG on Subnets** | `vnetSubnet-RequireNetworkSecurityGroup.json` | Ensures all subnets have a Network Security Group assigned | Deny, Audit, Disabled | Working |
+| **Audit Required NSG Rules** | `networkSecurityGroup-AuditRequiredSecurityRule.json` | Audits NSGs to ensure they contain specific security rules | Audit, AuditIfNotExists, Disabled | In Progress |
+| **Deploy Required NSG Rules** | `networkSecurityGroup-DeployRequiredSecurityRule.json` | Automatically deploys missing security rules to NSGs | DeployIfNotExists, AuditIfNotExists, Disabled | In Progress |
+| **Prevent Specific NSG Rules** | `networkSecurityGroup-DenySecurityRule.json` | Prevents creation of NSG rules matching specified criteria | Deny, Audit, Disabled | In Progress |
+| **Enable Private DNS Internet Fallback** | `privateDnsZones-EnableInternetFailback.json` | Configures private DNS zones to enable internet fallback | DeployIfNotExists, Disabled | In Progress |
 
 ### Tag Governance Policies (`/policies/tags/`)
 
-| Policy | File | Description | Effects |
-|--------|------|-------------|---------|
-| **Require Tag on Resources** | `tags-RequireATagFromASetofValuesOnResources.json` | Enforces required tags with specific values on resources | Audit, Deny, Disabled |
-| **Require Tag on Resource Groups** | `tags-RequireATagFromASetofValuesOnResourceGroups.json` | Enforces required tags with specific values on resource groups | Audit, Deny, Disabled |
-| **Require Tag on Resource Types** | `tags-RequireATagFromASetofValuesOnResourceType.json` | Enforces required tags with specific values on specific resource types | Audit, Deny, Disabled |
-| **Append Tag to Resource Types** | `tags-AppendATagOnResourceType.json` | Automatically adds tags to specific resource types during creation | Append, Disabled |
-| **Inherit Tag from Resource Group** | `tags-InheritATagFromResourceGroupOnResourceType.json` | Inherits tags from parent resource group to specific resource types | Append, Disabled |
+| Policy | File | Description | Effects | State |
+|--------|------|-------------|---------|-------|
+| **Require Tag on Resources** | `tags-RequireATagFromASetofValuesOnResources.json` | Enforces required tags with specific values on resources | Audit, Deny, Disabled | Working |
+| **Require Tag on Resource Groups** | `tags-RequireATagFromASetofValuesOnResourceGroups.json` | Enforces required tags with specific values on resource groups | Audit, Deny, Disabled | Working |
+| **Require Tag on Resource Types** | `tags-RequireATagFromASetofValuesOnResourceType.json` | Enforces required tags with specific values on specific resource types | Audit, Deny, Disabled | Working |
+| **Append Tag to Resource Types** | `tags-AppendATagOnResourceType.json` | Automatically adds tags to specific resource types during creation | Append, Disabled | Working |
+| **Inherit Tag from Resource Group** | `tags-InheritATagFromResourceGroupOnResourceType.json` | Inherits tags from parent resource group to specific resource types | Append, Disabled | Working |
 
 ### Monitoring Policies (`/policies/mon/`)
 
-| Policy | File | Description | Effects |
-|--------|------|-------------|---------|
-| **Azure Firewall Diagnostic Settings** | `diagnosticSettings-AzureFirewall-LogAnaltyics.json` | Enables diagnostic logging for Azure Firewalls to Log Analytics | DeployIfNotExists, AuditIfNotExists, Disabled |
+| Policy | File | Description | Effects | State |
+|--------|------|-------------|---------|-------|
+| **Azure Firewall Diagnostic Settings** | `diagnosticSettings-AzureFirewall-LogAnaltyics.json` | Enables diagnostic logging for Azure Firewalls to Log Analytics | DeployIfNotExists, AuditIfNotExists, Disabled | In Progress |
 
 ## Policy Initiatives (`/initiatives/`)
 
