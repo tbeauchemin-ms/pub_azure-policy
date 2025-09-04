@@ -57,7 +57,7 @@ All policies are designed following Azure Policy best practices with comprehensi
 
 | Policy | File | Description | Effects | State |
 |--------|------|-------------|---------|-------|
-| **Azure Firewall Diagnostic Settings** | `diagnosticSettings-AzureFirewall-LogAnaltyics.json` | Enables diagnostic logging for Azure Firewalls to Log Analytics | DeployIfNotExists, AuditIfNotExists, Disabled | In Progress |
+| **Azure Firewall Diagnostic Settings** | `diagnosticSettings-AzureFirewall-LogAnaltyics.json` | Modified from the Built-In policy to enables diagnostic logging for Azure Firewalls to Log Analytics to either the AzureDiagnostic table or to ResourceSpecific tables.  | DeployIfNotExists, AuditIfNotExists, Disabled | Working |
 
 ## Policy Initiatives (`/initiatives/`)
 
