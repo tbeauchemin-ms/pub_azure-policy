@@ -43,7 +43,8 @@
                 "allowedValues": [
                     "RequireTagAndValue",
                     "RequireTagValueFromSet"
-                ]
+                ],
+                "defaultValue": "RequireTagAndValue"
             },
             "tagName": {
                 "type": "String",
