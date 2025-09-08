@@ -5,10 +5,10 @@
         "mode": "Indexed",
         "description": "Enforces a tag and its value from a set of values on resources. Does not apply to resource groups.",
         "metadata": {
-            "version": "1.0.0",
+            "version": "1.0.1",
             "category": "Tags"
         },
-        "version": "1.0.0",
+        "version": "1.0.1",
         "parameters": {
             "effect": {
                 "type": "String",
@@ -60,10 +60,8 @@
                                 "equals": "RequireTagAndValue"
                             },
                             {
-                                "not": {
-                                    "field": "[concat('tags[', parameters('tagName'), ']')]",
-                                    "in": "[parameters('tagValues')]"
-                                }
+                                "field": "[concat('tags[', parameters('tagName'), ']')]",
+                                "notIn": "[parameters('tagValues')]"
                             }
                         ]
                     },
@@ -78,10 +76,8 @@
                                 "exists": "true"
                             },
                             {
-                                "not": {
-                                    "field": "[concat('tags[', parameters('tagName'), ']')]",
-                                    "in": "[parameters('tagValues')]"
-                                }
+                                "field": "[concat('tags[', parameters('tagName'), ']')]",
+                                "notIn": "[parameters('tagValues')]"
                             }
                         ]
                     }
